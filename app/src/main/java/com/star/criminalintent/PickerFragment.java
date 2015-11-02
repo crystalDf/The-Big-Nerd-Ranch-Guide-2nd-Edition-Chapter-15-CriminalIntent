@@ -70,5 +70,4 @@ public abstract class PickerFragment extends DialogFragment {
             dismiss();
         }
     }
-
 }
