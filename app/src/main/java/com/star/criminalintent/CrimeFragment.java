@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.ShareCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -155,18 +156,20 @@ public class CrimeFragment extends Fragment {
         mReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TEXT, getCrimeReport());
-                intent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.crime_report_subject));
-                intent = Intent.createChooser(intent, getString(R.string.send_report));
+                ShareCompat.IntentBuilder intentBuilder =
+                        ShareCompat.IntentBuilder.from(getActivity());
+                Intent intent = intentBuilder
+                        .setType("text/plain")
+                        .setText(getCrimeReport())
+                        .setSubject(getString(R.string.crime_report_subject))
+                        .setChooserTitle(getString(R.string.send_report))
+                        .createChooserIntent();
                 startActivity(intent);
             }
         });
 
         final Intent pickIntent = new Intent(Intent.ACTION_PICK,
                 ContactsContract.Contacts.CONTENT_URI);
-        pickIntent.addCategory(Intent.CATEGORY_HOME);
 
         mSuspectButton = (Button) view.findViewById(R.id.crime_suspect);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
