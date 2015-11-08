@@ -75,5 +75,4 @@ public class DatePickerFragment extends PickerFragment {
         return new GregorianCalendar(
                 year, month, dayOfMonth, hourOfDay, minute).getTime();
     }
-
 }

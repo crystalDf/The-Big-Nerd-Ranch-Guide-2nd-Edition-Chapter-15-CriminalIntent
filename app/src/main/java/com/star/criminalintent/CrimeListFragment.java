@@ -18,6 +18,8 @@ import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.star.criminalintent.model.Crime;
+
 import java.util.List;
 
 
@@ -182,7 +184,7 @@ public class CrimeListFragment extends Fragment {
                 return true;
             case R.id.menu_item_show_subtitle:
                 mSubtitleVisible = !mSubtitleVisible;
-                getActivity().invalidateOptionsMenu();
+                getActivity().supportInvalidateOptionsMenu();
                 updateSubtitle();
                 return true;
             default:

@@ -1,4 +1,4 @@
-package com.star.criminalintent;
+package com.star.criminalintent.model;
 
 
 import java.text.SimpleDateFormat;
@@ -12,7 +12,7 @@ public class Crime {
     private String mTitle;
     private Date mDate;
     private boolean mSolved;
-    private String mSuspect;
+    private Suspect mSuspect;
 
     public Crime() {
         this(UUID.randomUUID());
@@ -51,11 +51,11 @@ public class Crime {
         mSolved = solved;
     }
 
-    public String getSuspect() {
+    public Suspect getSuspect() {
         return mSuspect;
     }
 
-    public void setSuspect(String suspect) {
+    public void setSuspect(Suspect suspect) {
         mSuspect = suspect;
     }
 
