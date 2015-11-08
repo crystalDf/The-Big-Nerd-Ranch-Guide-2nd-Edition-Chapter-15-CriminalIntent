@@ -192,7 +192,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(Intent.ACTION_DIAL,
-                        Uri.parse("tel:" + mDialButton.getText()));
+                        Uri.parse("tel:" + mCrime.getSuspect().getPhoneNumber()));
                 startActivity(intent);
             }
         });
