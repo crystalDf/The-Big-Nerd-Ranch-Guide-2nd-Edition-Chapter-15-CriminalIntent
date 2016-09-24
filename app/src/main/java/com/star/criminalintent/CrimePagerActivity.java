@@ -55,8 +55,8 @@ public class CrimePagerActivity extends AppCompatActivity {
         }
     }
 
-    public static Intent newIntent(Context context, UUID crimeId) {
-        Intent intent = new Intent(context, CrimePagerActivity.class);
+    public static Intent newIntent(Context packageContext, UUID crimeId) {
+        Intent intent = new Intent(packageContext, CrimePagerActivity.class);
         intent.putExtra(EXTRA_CRIME_ID, crimeId);
         return intent;
     }

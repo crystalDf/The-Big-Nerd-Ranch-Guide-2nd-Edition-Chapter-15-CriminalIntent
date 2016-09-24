@@ -33,14 +33,14 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
+import static com.star.criminalintent.PickerFragment.EXTRA_DATE;
+
 
 public class CrimeFragment extends Fragment {
 
     private static final String ARG_CRIME_ID = "crime_id";
     private static final String DIALOG_DATE = "DialogDate";
     private static final String DIALOG_TIME = "DialogTime";
-
-    public static final String EXTRA_DATE = "date";
 
     private static final int REQUEST_DATE = 0;
     private static final int REQUEST_CONTACT = 1;
@@ -102,7 +102,6 @@ public class CrimeFragment extends Fragment {
         });
 
         mDateButton = (Button) view.findViewById(R.id.crime_date);
-        updateDate();
         mDateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,9 +115,7 @@ public class CrimeFragment extends Fragment {
                     datePickerFragment.show(fragmentManager, DIALOG_DATE);
                 } else if (getResources().getConfiguration().orientation
                         == Configuration.ORIENTATION_PORTRAIT) {
-                    Intent intent = new Intent(CrimeFragment.this.getActivity(),
-                            DatePickerActivity.class);
-                    intent.putExtra(EXTRA_DATE, mCrime.getDate());
+                    Intent intent = DatePickerActivity.newIntent(getActivity(), mCrime.getDate());
                     startActivityForResult(intent, REQUEST_DATE);
                 }
 
@@ -126,7 +123,6 @@ public class CrimeFragment extends Fragment {
         });
 
         mTimeButton = (Button) view.findViewById(R.id.crime_time);
-        updateTime();
         mTimeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -139,9 +135,7 @@ public class CrimeFragment extends Fragment {
                     timePickerFragment.show(fragmentManager, DIALOG_TIME);
                 } else if (getResources().getConfiguration().orientation
                         == Configuration.ORIENTATION_PORTRAIT) {
-                    Intent intent = new Intent(CrimeFragment.this.getActivity(),
-                            TimePickerActivity.class);
-                    intent.putExtra(EXTRA_DATE, mCrime.getDate());
+                    Intent intent = TimePickerActivity.newIntent(getActivity(), mCrime.getDate());
                     startActivityForResult(intent, REQUEST_DATE);
                 }
             }
@@ -208,6 +202,18 @@ public class CrimeFragment extends Fragment {
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        updateUI();
+    }
+
+    private void updateUI() {
+        mDateButton.setText(mCrime.getFormattedDate());
+        mTimeButton.setText(mCrime.getFormattedTime());
+    }
+
+    @Override
     public void onPause() {
         super.onPause();
 
@@ -222,10 +228,9 @@ public class CrimeFragment extends Fragment {
         }
 
         if (requestCode == REQUEST_DATE) {
-            Date date = (Date) data.getSerializableExtra(PickerFragment.EXTRA_DATE);
+            Date date = (Date) data.getSerializableExtra(EXTRA_DATE);
             mCrime.setDate(date);
-            updateDate();
-            updateTime();
+            updateUI();
         } else if (requestCode == REQUEST_CONTACT) {
             Uri contactUri = data.getData();
             String[] columns = new String[] {
@@ -307,14 +312,6 @@ public class CrimeFragment extends Fragment {
                 cursor.close();
             }
         }
-    }
-
-    private void updateDate() {
-        mDateButton.setText(mCrime.getFormattedDate());
-    }
-
-    private void updateTime() {
-        mTimeButton.setText(mCrime.getFormattedTime());
     }
 
     @Override
