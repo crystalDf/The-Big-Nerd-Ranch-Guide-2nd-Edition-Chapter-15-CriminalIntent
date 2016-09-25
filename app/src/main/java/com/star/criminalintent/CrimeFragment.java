@@ -232,71 +232,52 @@ public class CrimeFragment extends Fragment {
             mCrime.setDate(date);
             updateUI();
         } else if (requestCode == REQUEST_CONTACT) {
-            Uri contactUri = data.getData();
-            String[] columns = new String[] {
-                    ContactsContract.Contacts._ID,
-                    ContactsContract.Contacts.DISPLAY_NAME
-            };
-
-            Cursor cursor = getActivity().getContentResolver().query(contactUri, columns,
-                    null, null, null);
-
-            if (cursor == null) {
-                return;
-            }
-
-            try {
-                if (cursor.getCount() > 0) {
-                    cursor.moveToFirst();
-                    String contactId = cursor.getString(
-                            cursor.getColumnIndex(ContactsContract.Contacts._ID));
-                    String displayName = cursor.getString(
-                            cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-
-                    Suspect suspect = updateAndGetSuspect(contactId, displayName);
-
-                    mCrime.setSuspect(suspect);
-
-                    mSuspectButton.setText(mCrime.getSuspect().getDisplayName());
-                    mDialButton.setEnabled(true);
-                }
-            } finally {
-                cursor.close();
-            }
+            setUpChooseSuspectButton(data);
 
             if (mCrime.getSuspect() == null) {
                 return;
             }
 
-            Uri commonDataKindPhoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-            columns = new String[] {
-                    ContactsContract.CommonDataKinds.Phone.NUMBER
-            };
-            String whereClause = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ? ";
-            String[] whereArgs = new String[] {mCrime.getSuspect().getContactId()};
+            setUpMakeAPhoneCallButton();
 
-            cursor = getActivity().getContentResolver().query(commonDataKindPhoneUri,
-                    columns, whereClause, whereArgs, null);
-
-            if (cursor == null) {
-                return;
-            }
-
-            try {
-                if (cursor.getCount() > 0) {
-                    cursor.moveToFirst();
-                    String phoneNumber = cursor.getString(
-                            cursor.getColumnIndex(
-                                    ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    mCrime.getSuspect().setPhoneNumber(phoneNumber);
-                    CrimeLab.getInstance(getContext()).updateSuspect(mCrime.getSuspect());
-
-                    mDialButton.setText(phoneNumber);
-                }
-            } finally {
-                cursor.close();
-            }
+            CrimeLab.getInstance(getContext()).updateSuspect(mCrime.getSuspect());
         }
+    }
+
+    private void setUpChooseSuspectButton(Intent data) {
+        Uri contactUri = data.getData();
+
+        String[] columns = new String[] {
+                ContactsContract.Contacts._ID,
+                ContactsContract.Contacts.DISPLAY_NAME
+        };
+
+        Cursor cursor = getActivity().getContentResolver().query(contactUri, columns,
+                null, null, null);
+
+        if (cursor == null) {
+            return;
+        }
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                String contactId = cursor.getString(
+                        cursor.getColumnIndex(ContactsContract.Contacts._ID));
+                String displayName = cursor.getString(
+                        cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+
+                Suspect suspect = updateAndGetSuspect(contactId, displayName);
+
+                mCrime.setSuspect(suspect);
+
+                mSuspectButton.setText(mCrime.getSuspect().getDisplayName());
+                mDialButton.setEnabled(true);
+            }
+        } finally {
+            cursor.close();
+        }
+
     }
 
     private Suspect updateAndGetSuspect(String contactId, String displayName) {
@@ -317,9 +298,42 @@ public class CrimeFragment extends Fragment {
         }
 
         newSuspect.setCrimeCount(newSuspect.getCrimeCount() + 1);
-        CrimeLab.getInstance(getContext()).updateSuspect(newSuspect);
 
         return newSuspect;
+    }
+
+    private void setUpMakeAPhoneCallButton() {
+        Uri commonDataKindPhoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+
+        String[] columns = new String[] {
+                ContactsContract.CommonDataKinds.Phone.NUMBER
+        };
+
+        String whereClause = ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ? ";
+        String[] whereArgs = new String[] {mCrime.getSuspect().getContactId()};
+
+        Cursor cursor = getActivity().getContentResolver().query(commonDataKindPhoneUri,
+                columns, whereClause, whereArgs, null);
+
+        if (cursor == null) {
+            return;
+        }
+
+        try {
+            if (cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                String phoneNumber = cursor.getString(
+                        cursor.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                mCrime.getSuspect().setPhoneNumber(phoneNumber);
+
+                mDialButton.setText(phoneNumber);
+            }
+        } finally {
+            cursor.close();
+        }
+
     }
 
     @Override
