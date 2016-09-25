@@ -253,22 +253,7 @@ public class CrimeFragment extends Fragment {
                     String displayName = cursor.getString(
                             cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
 
-                    Suspect oldSuspect = mCrime.getSuspect();
-
-                    if (oldSuspect != null) {
-                        oldSuspect.setCrimeCount(oldSuspect.getCrimeCount() - 1);
-                        CrimeLab.getInstance(getContext()).updateSuspect(oldSuspect);
-                    }
-
-                    Suspect suspect = CrimeLab.getInstance(getContext()).getSuspect(contactId);
-                    if (suspect == null) {
-                        suspect = new Suspect();
-                        suspect.setContactId(contactId);
-                        suspect.setDisplayName(displayName);
-                        CrimeLab.getInstance(getContext()).addSuspect(suspect);
-                    }
-                    suspect.setCrimeCount(suspect.getCrimeCount() + 1);
-                    CrimeLab.getInstance(getContext()).updateSuspect(suspect);
+                    Suspect suspect = updateAndGetSuspect(contactId, displayName);
 
                     mCrime.setSuspect(suspect);
 
@@ -312,6 +297,29 @@ public class CrimeFragment extends Fragment {
                 cursor.close();
             }
         }
+    }
+
+    private Suspect updateAndGetSuspect(String contactId, String displayName) {
+        Suspect oldSuspect = mCrime.getSuspect();
+
+        if (oldSuspect != null) {
+            oldSuspect.setCrimeCount(oldSuspect.getCrimeCount() - 1);
+            CrimeLab.getInstance(getContext()).updateSuspect(oldSuspect);
+        }
+
+        Suspect newSuspect = CrimeLab.getInstance(getContext()).getSuspect(contactId);
+
+        if (newSuspect == null) {
+            newSuspect = new Suspect();
+            newSuspect.setContactId(contactId);
+            newSuspect.setDisplayName(displayName);
+            CrimeLab.getInstance(getContext()).addSuspect(newSuspect);
+        }
+
+        newSuspect.setCrimeCount(newSuspect.getCrimeCount() + 1);
+        CrimeLab.getInstance(getContext()).updateSuspect(newSuspect);
+
+        return newSuspect;
     }
 
     @Override
