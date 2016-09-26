@@ -232,19 +232,19 @@ public class CrimeFragment extends Fragment {
             mCrime.setDate(date);
             updateUI();
         } else if (requestCode == REQUEST_CONTACT) {
-            setUpChooseSuspectButton(data);
+            updateChooseSuspectButton(data);
 
             if (mCrime.getSuspect() == null) {
                 return;
             }
 
-            setUpMakeAPhoneCallButton();
+            updateMakeAPhoneCallButton();
 
             CrimeLab.getInstance(getContext()).updateSuspect(mCrime.getSuspect());
         }
     }
 
-    private void setUpChooseSuspectButton(Intent data) {
+    private void updateChooseSuspectButton(Intent data) {
         Uri contactUri = data.getData();
 
         String[] columns = new String[] {
@@ -302,7 +302,7 @@ public class CrimeFragment extends Fragment {
         return newSuspect;
     }
 
-    private void setUpMakeAPhoneCallButton() {
+    private void updateMakeAPhoneCallButton() {
         Uri commonDataKindPhoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
 
         String[] columns = new String[] {
