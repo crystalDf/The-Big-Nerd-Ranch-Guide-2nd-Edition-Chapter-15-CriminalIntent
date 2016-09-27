@@ -231,11 +231,6 @@ public class CrimeFragment extends Fragment {
             updateUI();
         } else if (requestCode == REQUEST_CONTACT) {
             updateChooseSuspectButton(data);
-
-            if (mCrime.getSuspect() == null) {
-                return;
-            }
-
             updateMakeAPhoneCallButton();
 
             CrimeLab.getInstance(getContext()).updateSuspect(mCrime.getSuspect());
@@ -301,6 +296,10 @@ public class CrimeFragment extends Fragment {
     }
 
     private void updateMakeAPhoneCallButton() {
+        if (mCrime.getSuspect() == null) {
+            return;
+        }
+
         Uri commonDataKindPhoneUri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
 
         String[] columns = new String[] {
