@@ -33,8 +33,6 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.UUID;
 
-import static com.star.criminalintent.PickerFragment.EXTRA_DATE;
-
 
 public class CrimeFragment extends Fragment {
 
@@ -228,7 +226,7 @@ public class CrimeFragment extends Fragment {
         }
 
         if (requestCode == REQUEST_DATE) {
-            Date date = (Date) data.getSerializableExtra(EXTRA_DATE);
+            Date date = (Date) data.getSerializableExtra(PickerFragment.EXTRA_DATE);
             mCrime.setDate(date);
             updateUI();
         } else if (requestCode == REQUEST_CONTACT) {
