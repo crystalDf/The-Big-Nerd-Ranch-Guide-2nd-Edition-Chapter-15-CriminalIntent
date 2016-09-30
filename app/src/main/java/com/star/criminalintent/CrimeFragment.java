@@ -174,10 +174,11 @@ public class CrimeFragment extends Fragment {
         });
 
         PackageManager packageManager = getActivity().getPackageManager();
-        if (packageManager.resolveActivity(pickIntent,
-                PackageManager.MATCH_DEFAULT_ONLY) == null) {
-            mSuspectButton.setEnabled(false);
-        }
+
+        boolean canChooseSuspect = (packageManager.resolveActivity(pickIntent,
+                PackageManager.MATCH_DEFAULT_ONLY) != null);
+
+        mSuspectButton.setEnabled(canChooseSuspect);
 
         mDialButton = (Button) view.findViewById(R.id.crime_dial);
         mDialButton.setOnClickListener(new View.OnClickListener() {
