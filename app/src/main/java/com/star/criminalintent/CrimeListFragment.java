@@ -224,4 +224,5 @@ public class CrimeListFragment extends Fragment {
         Intent intent = CrimePagerActivity.newIntent(getContext(), crime.getId());
         startActivity(intent);
     }
+
 }
